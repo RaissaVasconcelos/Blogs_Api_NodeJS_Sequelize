@@ -1,3 +1,5 @@
+'use strinct';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable('blog_posts', {
@@ -18,23 +20,18 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        // Informa que o campo é uma Foreign Key (Chave estrangeira)
         references: {
-          // Informa a tabela da referência da associação
           model: 'users',
-          // Informa a coluna da referência que é a chave correspondente
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       published: {
-        allowNull: false,
-        type: Sequelize.DATETIME,
+        type: Sequelize.DATE,
       },
       updated: {
-        allowNull: false,
-        type: Sequelize.DATETIME,
+        type: Sequelize.DATE,
       },
     });
   },
