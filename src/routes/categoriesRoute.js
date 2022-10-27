@@ -9,5 +9,6 @@ const route = express.Router();
 
 // rota privada
 route.post('/categories', midlewareToken, categoriesController.addCategories);
+route.get('/categories', midlewareToken, categoriesController.getAll);
 
 module.exports = route;
