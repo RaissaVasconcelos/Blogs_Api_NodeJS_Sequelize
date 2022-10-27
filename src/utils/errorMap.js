@@ -2,6 +2,7 @@ const errorMap = {
   VALUE_INVALID: 400,
   INVALID_FIELD: 400,
   USER_REGISTERED: 409,
+  TOKEN_INVALID: 401,
   ERROR: 500,
 };
 

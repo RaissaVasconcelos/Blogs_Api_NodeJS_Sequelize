@@ -2,6 +2,9 @@
 const userService = require('../service/user.service'); 
 const errorMap = require('../utils/errorMap');
 
+const HTTPS_STATUS_OK = 200;
+const HTTPS_STATUS_CREATED = 201;
+
 const loginUser = async (req, res) => {
   const result = await userService.validadeUser(req.body);
 
@@ -12,9 +15,16 @@ const loginUser = async (req, res) => {
 
   if (type) return res.status(errorMap.mapError(type)).json({ message });
 
-  return res.status(201).json({ token: message });
+  return res.status(HTTPS_STATUS_CREATED).json({ token: message });
+};
+
+const getAll = async (_req, res) => {
+  const result = await userService.getAll();
+
+  return res.status(HTTPS_STATUS_OK).json(result);
 };
 
 module.exports = {
   loginUser,
+  getAll,
 };

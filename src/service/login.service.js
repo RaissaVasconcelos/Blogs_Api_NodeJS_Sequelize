@@ -9,7 +9,7 @@ const { schemaLogin } = require('../utils/validations');
 const validadeBody = (params) => {
   const { error, value } = schemaLogin.validate(params);
 
-  if (error) return error.message;
+  if (error) return { type: 'VALUE_INVALID', message: error.message };
 
   return value;
 };

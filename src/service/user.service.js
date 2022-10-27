@@ -9,7 +9,6 @@ const validadeUser = (params) => {
   const { error, value } = schemaUser.validate(params);
 
   if (error) return error.message;
-
   return value;
 };
 
@@ -29,7 +28,17 @@ const createUser = async ({ displayName, email, password, image }) => {
   return { type: null, message: token };
 };
 
+const getAll = async () => {
+  const result = await User.findAll();
+
+  return result.map((item) => {
+    const { password: _, ...rest } = item.dataValues;
+    return rest;
+  });
+};
+
 module.exports = {
   validadeUser,
   createUser,
+  getAll,
 };
