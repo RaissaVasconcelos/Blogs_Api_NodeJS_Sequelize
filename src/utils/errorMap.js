@@ -1,13 +1,13 @@
-const erroMap = {
+const errorMap = {
   VALUE_INVALID: 400,
   INVALID_FIELD: 400,
-  USER_INVALID: 409,
+  USER_REGISTERED: 409,
   ERROR: 500,
 };
 
-const mapError = (type) => erroMap[type];
+const mapError = (type) => errorMap[type];
 
 module.exports = {
-  erroMap,
+  errorMap,
   mapError,
 };

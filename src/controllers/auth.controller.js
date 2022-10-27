@@ -1,5 +1,5 @@
 const authService = require('../service/auth.service');
-// const { erroMap } = require('../utils/errorMap');
+const errorMap = require('../utils/errorMap');
 
 const login = async (req, res) => {
   // valida a estrutura de email e password
@@ -18,16 +18,17 @@ const login = async (req, res) => {
 const loginUser = async (req, res) => {
   const result = await authService.validadeUser(req.body);
 
-  console.log('result', result);
-
   // verifica se trouxe o erro ou a estrutura de obj do 
   if (!result.displayName) return res.status(400).json({ message: result });
 
   const { type, message } = await authService.createUser(result);
 
-  if (!type) return res.status(201).json({ token: message });
+  console.log('type', type);
+  console.log('message', message);
 
-  return res.status(400).json({ message });
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+
+  return res.status(201).json({ token: message });
 };
 
 module.exports = {

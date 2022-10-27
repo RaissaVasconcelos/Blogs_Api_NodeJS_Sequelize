@@ -37,14 +37,18 @@ const validateLogin = async ({ email, password }) => {
   return { type: null, message: token };
 };
 
-const createUser = async ({ email, displayName }) => {
-  console.log(email);
+const createUser = async ({ displayName, email, password, image }) => {
   const user = await User.findOne({ where: { email } });
-  console.log(user);
 
-  if (!user) return { type: 'User already registered', message: 'User already registered' };
+  // verifica se o usuário existe no DB
+  if (user) return { type: 'USER_REGISTERED', message: 'User already registered' };
 
-  const token = jwtUtil.createToken(displayName);
+  // cria o novo usuario
+  const newUser = await User.create({ displayName, email, password, image });
+
+  const { password: _, ...rest } = newUser;
+  
+  const token = jwtUtil.createToken(rest);
 
   return { type: null, message: token };
 };
