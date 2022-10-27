@@ -37,8 +37,18 @@ const getAll = async () => {
   });
 };
 
+const getById = async (id) => {
+  const result = await User.findByPk(id);
+
+  if (!result) return { type: 'USER_NOT_FOUND', message: 'User does not exist' };
+
+  const { password: _, ...rest } = result.dataValues;
+  return { type: null, message: rest };
+};
+
 module.exports = {
   validadeUser,
   createUser,
   getAll,
+  getById,
 };

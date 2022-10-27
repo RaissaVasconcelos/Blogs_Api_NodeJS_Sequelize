@@ -3,7 +3,7 @@ const express = require('express');
 // controller
 const userController = require('../controllers/user.controller');
 // midlewares
-const tokenMidleware = require('../midlewares/tokenValidation');
+const { midlewareToken } = require('../midlewares/tokenValidation');
 
 const route = express.Router();
 
@@ -13,6 +13,7 @@ route.post('/user', userController.loginUser);
 // route.use(tokenMidleware.midlewareToken);
 
 // rota privada
-route.get('/user', tokenMidleware.midlewareToken, userController.getAll);
+route.get('/user', midlewareToken, userController.getAll);
+route.get('/user/:id', midlewareToken, userController.getById);
 
 module.exports = route;

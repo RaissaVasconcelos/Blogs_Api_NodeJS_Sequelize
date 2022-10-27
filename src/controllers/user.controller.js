@@ -20,11 +20,20 @@ const loginUser = async (req, res) => {
 
 const getAll = async (_req, res) => {
   const result = await userService.getAll();
-
   return res.status(HTTPS_STATUS_OK).json(result);
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+  const { type, message } = await userService.getById(Number(id));
+
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+
+  return res.status(HTTPS_STATUS_OK).json(message);
 };
 
 module.exports = {
   loginUser,
   getAll,
+  getById,
 };

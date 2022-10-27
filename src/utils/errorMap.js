@@ -3,6 +3,7 @@ const errorMap = {
   INVALID_FIELD: 400,
   USER_REGISTERED: 409,
   TOKEN_INVALID: 401,
+  USER_NOT_FOUND: 404,
   ERROR: 500,
 };
 
