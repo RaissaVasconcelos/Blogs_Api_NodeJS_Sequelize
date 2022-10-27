@@ -1,0 +1,35 @@
+const jwtUtil = require('../utils/jwt.utils');
+
+const { User } = require('../models');
+
+// validações
+const { schemaUser } = require('../utils/validations');
+
+const validadeUser = (params) => {
+  const { error, value } = schemaUser.validate(params);
+
+  if (error) return error.message;
+
+  return value;
+};
+
+const createUser = async ({ displayName, email, password, image }) => {
+  const user = await User.findOne({ where: { email } });
+
+  // verifica se o usuário existe no DB
+  if (user) return { type: 'USER_REGISTERED', message: 'User already registered' };
+
+  // cria o novo usuario
+  const newUser = await User.create({ displayName, email, password, image });
+
+  const { password: _, ...rest } = newUser;
+  
+  const token = jwtUtil.createToken(rest);
+
+  return { type: null, message: token };
+};
+
+module.exports = {
+  validadeUser,
+  createUser,
+};
