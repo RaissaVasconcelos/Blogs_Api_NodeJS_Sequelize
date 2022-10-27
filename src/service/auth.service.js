@@ -4,7 +4,7 @@ const jwtUtil = require('../utils/jwt.utils');
 const { User } = require('../models');
 
 // Validations
-const { schemaLogin } = require('../utils/Validations');
+const { schemaLogin, schemaUser } = require('../utils/validations');
 
 const validadeBody = (params) => {
   const { error, value } = schemaLogin.validate(params);
@@ -14,29 +14,13 @@ const validadeBody = (params) => {
   return value;
 };
 
-// const validadeUser = (params) => {
-//   const schema = Joi.object({
-//     displayName: Joi.string().required().min(8).messages({
-//       'string.empty': 'Some required fields are missing',
-//       'string.min': 'displayName length must be at least 8 characters long',
-//     }),
-//     email: Joi.string().email().required().messages({
-//       'string.empty': 'Some required fields are missing',
-//     }),
-//     password: Joi.string().min(6).required().messages({
-//       'string.empty': 'Some required fields are missing',
-//       'string.min': 'password length must be at least 6 characters long',
-//     }),
-//     image: Joi.string(),
-//   });
+const validadeUser = (params) => {
+  const { error, value } = schemaUser.validate(params);
 
-//   const { error, value } = schema.validate(params);
+  if (error) return error.message;
 
-//   if (error) return error.message;
-
-//   return value;
-
-// };
+  return value;
+};
 
 // valida se foi passado o email e password corretos e retornar o token
 const validateLogin = async ({ email, password }) => {
@@ -53,8 +37,21 @@ const validateLogin = async ({ email, password }) => {
   return { type: null, message: token };
 };
 
+const createUser = async ({ email, displayName }) => {
+  console.log(email);
+  const user = await User.findOne({ where: { email } });
+  console.log(user);
+
+  if (!user) return { type: 'User already registered', message: 'User already registered' };
+
+  const token = jwtUtil.createToken(displayName);
+
+  return { type: null, message: token };
+};
+
 module.exports = {
   validadeBody,
   validateLogin,
-  // validadeUser,
+  validadeUser,
+  createUser,
 };
