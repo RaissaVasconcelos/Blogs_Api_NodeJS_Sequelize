@@ -28,7 +28,21 @@ const schemaUser = Joi.object({
       image: Joi.string(),
     });
 
+const schemaPost = Joi.object({
+      title: Joi.string().required().messages({
+        'string.empty': fieldRequired,
+      }),
+      content: Joi.string().required().messages({
+        'string.empty': fieldRequired,
+      }),
+      categoryIds: Joi.array().length(1).required().messages({
+        'any.required': 'one or more "categoryIds" not found',
+        'array.length': 'one or more "categoryIds" not found',
+      }),
+    });
+
 module.exports = {
   schemaLogin,
   schemaUser,
+  schemaPost,
 };

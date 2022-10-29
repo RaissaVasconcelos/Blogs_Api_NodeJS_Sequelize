@@ -10,8 +10,6 @@ const route = express.Router();
 // rota publica
 route.post('/user', userController.loginUser);
 
-// route.use(tokenMidleware.midlewareToken);
-
 // rota privada
 route.get('/user', midlewareToken, userController.getAll);
 route.get('/user/:id', midlewareToken, userController.getById);

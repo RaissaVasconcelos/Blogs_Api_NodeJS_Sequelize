@@ -22,9 +22,9 @@ const validateLogin = async ({ email, password }) => {
     return { type: 'Invalid fields', message: 'Invalid fields' };
   }
 
-  const emailJwt = user.dataValues.email;
+  const { password: _, ...rest } = user.dataValues;
 
-  const token = jwtUtil.createToken(emailJwt);
+  const token = jwtUtil.createToken(rest);
 
   return { type: null, message: token };
 };

@@ -14,14 +14,13 @@ module.exports = (sequelize, DataTypes) => {
         model: 'users',
         key: 'id',
       },
-      onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
     published: DataTypes.STRING,
     updated: DataTypes.STRING,
   },
   {
-    tableName: 'blogPosts',
+    tableName: 'blog_posts',
     underscored: true,
     timestamps: false,
   });
