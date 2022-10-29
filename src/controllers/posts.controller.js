@@ -1,7 +1,7 @@
 const postsService = require('../service/posts.services');
 const errorMap = require('../utils/errorMap');
 
-// const HTTPS_STATUS_OK = 200;
+const HTTPS_STATUS_OK = 200;
 const HTTPS_STATUS_CREATED = 201;
 
 const addPosts = async (req, res) => {
@@ -16,6 +16,13 @@ const addPosts = async (req, res) => {
   return res.status(HTTPS_STATUS_CREATED).json(result);
 };
 
+const getPosts = async (_req, res) => {
+  const result = await postsService.getPosts();
+  // if (result) return res.status(HTTPS_STATUS_OK).json(result.message);
+  return res.status(HTTPS_STATUS_OK).json(result);
+};
+
 module.exports = {
   addPosts,
+  getPosts,
 };

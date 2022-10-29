@@ -8,4 +8,6 @@ const route = express.Router();
 
 route.post('/post', midlewareToken, postController.addPosts);
 
+route.get('/post', midlewareToken, postController.getPosts);
+
 module.exports = route;

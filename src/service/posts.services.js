@@ -1,4 +1,4 @@
-const { BlogPost, PostCategory, Category } = require('../models');
+const { User, BlogPost, PostCategory, Category } = require('../models');
 const { validatedToken } = require('../utils/jwt.utils');
 
 // validações
@@ -44,12 +44,30 @@ const addPosts = async ({ id, title, content, categoryIds }, token) => {
     { fields: ['postId', 'categoryId'] },
   );
 
-  console.log(blogPosts.dataValues);
-
   return blogPosts.dataValues;
+};
+
+const getPosts = async () => {
+  const result = await BlogPost.findAll({
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: { exclude: ['password'] },
+    },
+    {
+      model: Category,
+      as: 'categories',
+      attributes: ['id', 'name'],
+    },
+  ],
+  });
+  console.log('result', result);
+  // return { type: null, message: result };
+  return result;
 };
 
 module.exports = {
   addPosts,
   validatedPost,
+  getPosts,
 };
