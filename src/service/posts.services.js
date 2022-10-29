@@ -1,15 +1,24 @@
-const { BlogPost, PostCategory } = require('../models');
+const { BlogPost, PostCategory, Category } = require('../models');
 const { validatedToken } = require('../utils/jwt.utils');
 
 // validações
 const { schemaPost } = require('../utils/validations');
 
-const validatedPost = (post) => {
+const validatedPost = async (post) => {
+  const { categoryIds } = post;
+
   const { error, value } = schemaPost.validate(post);
-  console.log('error', error);
+
   if (error) return { type: 'FIELD_IS_REQUIRED', message: error.message };
+
+  const result = await Category.findAll();
+
+  const validateCategory = result.every((categorie) => 
+    categoryIds.find((item) => item === categorie.dataValues.id));
+
+  if (validateCategory) return { type: null, message: value };
   
-  return { type: null, message: value };
+  return { type: 'FIELD_IS_REQUIRED', message: 'one or more "categoryIds" not found' };  
 };
 
 const userId = async (token) => {

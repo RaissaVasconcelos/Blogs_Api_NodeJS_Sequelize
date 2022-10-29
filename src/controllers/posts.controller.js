@@ -7,7 +7,7 @@ const HTTPS_STATUS_CREATED = 201;
 const addPosts = async (req, res) => {
   const { authorization } = req.headers;
 
-  const { type, message } = postsService.validatedPost(req.body);
+  const { type, message } = await postsService.validatedPost(req.body);
 
   if (type) return res.status(errorMap.mapError(type)).json({ message });
 
