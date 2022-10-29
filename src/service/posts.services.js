@@ -61,13 +61,35 @@ const getPosts = async () => {
     },
   ],
   });
-  console.log('result', result);
   // return { type: null, message: result };
   return result;
+};
+
+const getById = async (id) => {
+  const validated = await BlogPost.findByPk(id);
+
+  if (!validated) return { type: 'POST_NOT_FOUND', message: 'Post does not exist' };
+  
+  const result = await BlogPost.findByPk(id, {
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: { exclude: ['password'] },
+    },
+    {
+      model: Category,
+      as: 'categories',
+      attributes: ['id', 'name'],
+    },
+  ],
+  });
+
+  return { type: null, message: result.dataValues };
 };
 
 module.exports = {
   addPosts,
   validatedPost,
   getPosts,
+  getById,
 };

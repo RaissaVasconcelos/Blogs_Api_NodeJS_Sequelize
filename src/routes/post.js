@@ -6,6 +6,8 @@ const { midlewareToken } = require('../midlewares/tokenValidation');
 
 const route = express.Router();
 
+route.get('/post/:id', midlewareToken, postController.getById);
+
 route.post('/post', midlewareToken, postController.addPosts);
 
 route.get('/post', midlewareToken, postController.getPosts);

@@ -22,7 +22,15 @@ const getPosts = async (_req, res) => {
   return res.status(HTTPS_STATUS_OK).json(result);
 };
 
+const getById = async (req, res) => {
+  const { id } = req.params;
+  const { type, message } = await postsService.getById(Number(id));
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  return res.status(HTTPS_STATUS_OK).json(message);
+};
+
 module.exports = {
   addPosts,
   getPosts,
+  getById,
 };
