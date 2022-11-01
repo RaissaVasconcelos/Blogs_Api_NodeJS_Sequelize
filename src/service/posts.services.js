@@ -1,8 +1,9 @@
+// const { Op } = require('sequelize');
 const { User, BlogPost, PostCategory, Category } = require('../models');
 const { validatedToken } = require('../utils/jwt.utils');
 
 // validações
-const { schemaPost } = require('../utils/validations');
+const { schemaPost, schemaEdited } = require('../utils/validations');
 
 const validatedPost = async (post) => {
   const { categoryIds } = post;
@@ -61,7 +62,6 @@ const getPosts = async () => {
     },
   ],
   });
-  // return { type: null, message: result };
   return result;
 };
 
@@ -87,9 +87,32 @@ const getById = async (id) => {
   return { type: null, message: result.dataValues };
 };
 
+const editedPost = async (id, post, token) => {
+  const { error, value } = schemaEdited.validate(post);
+
+  if (error) return { type: 'FIELD_IS_REQUIRED', message: error.message };
+
+  // o post só pode ser alterado se a pessoa for dona dele
+  const user = await userId(token);
+
+  if (user !== id) return { type: 'UNAUTHORIZED_USER', message: 'Unauthorized user' };
+
+  // atualiza o post
+  await BlogPost.update(value, {
+    where: { id: user },
+  });
+
+  const result = await BlogPost.findByPk(id);
+
+  console.log('result', result);
+  
+  return { type: null, message: result };
+};
+
 module.exports = {
   addPosts,
   validatedPost,
   getPosts,
   getById,
+  editedPost,
 };

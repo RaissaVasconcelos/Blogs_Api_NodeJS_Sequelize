@@ -18,7 +18,6 @@ const addPosts = async (req, res) => {
 
 const getPosts = async (_req, res) => {
   const result = await postsService.getPosts();
-  // if (result) return res.status(HTTPS_STATUS_OK).json(result.message);
   return res.status(HTTPS_STATUS_OK).json(result);
 };
 
@@ -29,8 +28,17 @@ const getById = async (req, res) => {
   return res.status(HTTPS_STATUS_OK).json(message);
 };
 
+const editedPost = async (req, res) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const { type, message } = await postsService.editedPost(Number(id), req.body, authorization);
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  return res.status(HTTPS_STATUS_OK).json(message);
+};
+
 module.exports = {
   addPosts,
   getPosts,
   getById,
+  editedPost,
 };

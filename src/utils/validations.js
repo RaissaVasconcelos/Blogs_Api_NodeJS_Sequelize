@@ -42,8 +42,18 @@ const schemaPost = Joi.object({
       }),
     });
 
+const schemaEdited = Joi.object({
+      title: Joi.string().required().messages({
+        'string.empty': fieldRequired,
+      }),
+      content: Joi.string().required().messages({
+        'string.empty': fieldRequired,
+      }),
+    }); 
+
 module.exports = {
   schemaLogin,
   schemaUser,
   schemaPost,
+  schemaEdited,
 };
