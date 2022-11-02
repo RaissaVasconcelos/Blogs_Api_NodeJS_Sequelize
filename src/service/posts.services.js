@@ -94,11 +94,9 @@ const editedPost = async (id, post, token) => {
 
   // o post só pode ser alterado se a pessoa for dona dele
   const user = await userLogin(token);
-  console.log('user', user);
   
   const postAfter = await BlogPost.findByPk(id);
   const { userId } = postAfter.dataValues;
-  console.log('usúario do post', userId);
 
   if (user !== userId) return { type: 'UNAUTHORIZED_USER', message: 'Unauthorized user' };
 
@@ -112,10 +110,28 @@ const editedPost = async (id, post, token) => {
   return { type: null, message: postBefore.message };
 };
 
+const deletedPost = async (id, token) => {
+  // será validado se o post não existe
+  const validated = await BlogPost.findByPk(id);
+  if (!validated) return { type: 'POST_NOT_FOUND', message: 'Post does not exist' };
+
+  // o post só pode ser deletado se a pessoa for dona dele
+  const user = await userLogin(token);
+  const postDeleted = await BlogPost.findByPk(id);
+  const { userId } = postDeleted.dataValues;
+  if (user !== userId) return { type: 'UNAUTHORIZED_USER', message: 'Unauthorized user' };
+
+  await BlogPost.destroy({
+    where: { id },
+  });
+  return { type: null, message: null };
+};
+
 module.exports = {
   addPosts,
   validatedPost,
   getPosts,
   getById,
   editedPost,
+  deletedPost,
 };

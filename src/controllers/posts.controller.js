@@ -3,6 +3,7 @@ const errorMap = require('../utils/errorMap');
 
 const HTTPS_STATUS_OK = 200;
 const HTTPS_STATUS_CREATED = 201;
+const HTTPS_STATUS_DELETED = 204;
 
 const addPosts = async (req, res) => {
   const { authorization } = req.headers;
@@ -36,9 +37,18 @@ const editedPost = async (req, res) => {
   return res.status(HTTPS_STATUS_OK).json(message);
 };
 
+const deletedPost = async (req, res) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const { type, message } = await postsService.deletedPost(Number(id), authorization);
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  return res.status(HTTPS_STATUS_DELETED).end();
+};
+
 module.exports = {
   addPosts,
   getPosts,
   getById,
   editedPost,
+  deletedPost,
 };

@@ -8,10 +8,12 @@ const route = express.Router();
 
 route.get('/post/:id', midlewareToken, postController.getById);
 
+route.put('/post/:id', midlewareToken, postController.editedPost);
+
+route.delete('/post/:id', midlewareToken, postController.deletedPost);
+
 route.post('/post', midlewareToken, postController.addPosts);
 
 route.get('/post', midlewareToken, postController.getPosts);
-
-route.put('/post/:id', midlewareToken, postController.editedPost);
 
 module.exports = route;
