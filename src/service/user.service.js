@@ -46,9 +46,19 @@ const getById = async (id) => {
   return { type: null, message: rest };
 };
 
+const deletedUser = async (token) => {
+  const user = jwtUtil.validatedToken(token);
+  
+  await User.destroy({
+    where: { id: user.id },
+  });
+  return { type: null, message: null };
+};
+
 module.exports = {
   validadeUser,
   createUser,
   getAll,
   getById,
+  deletedUser,
 };

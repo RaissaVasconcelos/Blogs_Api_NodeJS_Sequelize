@@ -11,7 +11,8 @@ const route = express.Router();
 route.post('/user', userController.loginUser);
 
 // rota privada
-route.get('/user', midlewareToken, userController.getAll);
+route.delete('/user/me', midlewareToken, userController.deletedUser);
 route.get('/user/:id', midlewareToken, userController.getById);
+route.get('/user', midlewareToken, userController.getAll);
 
 module.exports = route;
