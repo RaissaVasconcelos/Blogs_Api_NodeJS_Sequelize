@@ -22,7 +22,7 @@ const validatedPost = async (post) => {
   return { type: 'FIELD_IS_REQUIRED', message: 'one or more "categoryIds" not found' };  
 };
 
-const userId = async (token) => {
+const userLogin = async (token) => {
   const user = await validatedToken(token);
   return user.id;
 };
@@ -31,7 +31,7 @@ const addPosts = async ({ id, title, content, categoryIds }, token) => {
   const date = '2011-08-01T19';
   // adiciona o novo post
   const blogPosts = await BlogPost.create(
-    { id, title, content, userId: await userId(token), published: date, updated: date },
+    { id, title, content, userId: await userLogin(token), published: date, updated: date },
   );
     
   const arrBulk = categoryIds.map((category) => {
@@ -93,20 +93,23 @@ const editedPost = async (id, post, token) => {
   if (error) return { type: 'FIELD_IS_REQUIRED', message: error.message };
 
   // o post só pode ser alterado se a pessoa for dona dele
-  const user = await userId(token);
+  const user = await userLogin(token);
+  console.log('user', user);
+  
+  const postAfter = await BlogPost.findByPk(id);
+  const { userId } = postAfter.dataValues;
+  console.log('usúario do post', userId);
 
-  if (user !== id) return { type: 'UNAUTHORIZED_USER', message: 'Unauthorized user' };
+  if (user !== userId) return { type: 'UNAUTHORIZED_USER', message: 'Unauthorized user' };
 
   // atualiza o post
   await BlogPost.update(value, {
-    where: { id: user },
+    where: { id },
   });
 
-  const result = await BlogPost.findByPk(id);
+  const postBefore = await getById(id);
 
-  console.log('result', result);
-  
-  return { type: null, message: result };
+  return { type: null, message: postBefore.message };
 };
 
 module.exports = {
