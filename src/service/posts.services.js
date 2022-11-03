@@ -1,4 +1,4 @@
-// const { Op } = require('sequelize');
+const { Op } = require('sequelize');
 const { User, BlogPost, PostCategory, Category } = require('../models');
 const { validatedToken } = require('../utils/jwt.utils');
 
@@ -29,11 +29,13 @@ const userLogin = async (token) => {
 
 const addPosts = async ({ id, title, content, categoryIds }, token) => {
   const date = '2011-08-01T19';
+
   // adiciona o novo post
   const blogPosts = await BlogPost.create(
     { id, title, content, userId: await userLogin(token), published: date, updated: date },
   );
-    
+  
+  // retorna [ { postId: 3, categoryId: 1 }, { postId: 3, categoryId: 2 } para o método do bulk
   const arrBulk = categoryIds.map((category) => {
     const post = blogPosts.dataValues;
     return { postId: post.id, categoryId: category };
@@ -48,19 +50,21 @@ const addPosts = async ({ id, title, content, categoryIds }, token) => {
   return blogPosts.dataValues;
 };
 
+const modelQueryUser = () => [
+  {
+    model: User,
+    as: 'user',
+    attributes: { exclude: ['password'] },
+  },
+  {
+    model: Category,
+    as: 'categories',
+    through: { attributes: [] },
+  }];
+
 const getPosts = async () => {
   const result = await BlogPost.findAll({
-    include: [{
-      model: User,
-      as: 'user',
-      attributes: { exclude: ['password'] },
-    },
-    {
-      model: Category,
-      as: 'categories',
-      attributes: ['id', 'name'],
-    },
-  ],
+    include: modelQueryUser(),
   });
   return result;
 };
@@ -71,17 +75,7 @@ const getById = async (id) => {
   if (!validated) return { type: 'POST_NOT_FOUND', message: 'Post does not exist' };
   
   const result = await BlogPost.findByPk(id, {
-    include: [{
-      model: User,
-      as: 'user',
-      attributes: { exclude: ['password'] },
-    },
-    {
-      model: Category,
-      as: 'categories',
-      attributes: ['id', 'name'],
-    },
-  ],
+    include: modelQueryUser(),
   });
 
   return { type: null, message: result.dataValues };
@@ -127,6 +121,18 @@ const deletedPost = async (id, token) => {
   return { type: null, message: null };
 };
 
+const searchPost = async (searched) => {
+  const result = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.substring]: searched } },
+        { content: { [Op.substring]: searched } },
+      ] },
+    include: modelQueryUser(),
+  });
+  return { type: null, message: result || [] };
+};
+
 module.exports = {
   addPosts,
   validatedPost,
@@ -134,4 +140,5 @@ module.exports = {
   getById,
   editedPost,
   deletedPost,
+  searchPost,
 };

@@ -45,10 +45,19 @@ const deletedPost = async (req, res) => {
   return res.status(HTTPS_STATUS_DELETED).end();
 };
 
+const searchPost = async (req, res) => {
+  const { q } = req.query;
+  const { authorization } = req.headers;
+  const { type, message } = await postsService.searchPost(q, authorization);
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  return res.status(HTTPS_STATUS_OK).json(message);
+};
+
 module.exports = {
   addPosts,
   getPosts,
   getById,
   editedPost,
   deletedPost,
+  searchPost,
 };
